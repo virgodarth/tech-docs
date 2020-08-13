@@ -48,13 +48,6 @@ Sorry, try again.
 + [[ -z '' ]]
 + ANSIBLE_REPO=https://github.com/edx/ansible.git
 + [[ -z '' ]]
-+ ANSIBLE_VERSION=master
-+ [[ -z '' ]]
-+ CONFIGURATION_REPO=https://github.com/edx/configuration.git
-+ [[ -z '' ]]
-+ CONFIGURATION_VERSION=open-release/juniper.2
-+ [[ -z '' ]]
-+ UPGRADE_OS=false
 
 ########WAIT AND WAIT. THIS CAN TAKE 10 MINUTES##########
 TASK [edx_ansible : Create a symlink for the playbooks dir] ********************
@@ -79,7 +72,7 @@ PLAY RECAP *********************************************************************
 ```
 
 4. Randomize passwords.
-This step will generate a **my-passwords.yml** file. This file store password of MySQL, MongoDB, RabitMQ, etc. And you need save it carefully.
+This step will generate a **my-passwords.yml** file. The file store password of MySQL, MongoDB, RabitMQ, etc. And you need save it carefully.
 If this is to replace an older installation, copy your **my-passwords.yml** file from that installation.
 If this is a new installation: 
 ```
@@ -89,10 +82,22 @@ config.yml  my-passwords.yml  passwords-template.yml
 ```
 
 5. Install the Open edX software.
-This command also requiremnt root permission
+This command also require root permission
 This can take some time, perhaps an hour or more: 
 ```
 $ wget https://raw.githubusercontent.com/edx/configuration/$OPENEDX_RELEASE/util/install/native.sh -O - | bash
+...
+RUNNING HANDLER [nginx : reload nginx] *****************************************
+changed: [localhost]
+
+RUNNING HANDLER [forum : restart the forum service] ****************************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=678  changed=475  unreachable=0    failed=0
+
+Installation finished at 2020-08-12 23:04:26  # well done
+
 ```
 
 ## Bad Suggestions (Arbitrary Upgrades)
