@@ -100,6 +100,29 @@ Installation finished at 2020-08-12 23:04:26  # well done
 
 ```
 
+6. Check Services
+```
+$ sudo /edx/bin/supervisorctl status
+analytics_api                    RUNNING   pid 2159, uptime 0:02:01
+certs                            RUNNING   pid 2158, uptime 0:02:01
+cms                              RUNNING   pid 2175, uptime 0:02:01
+discovery                        RUNNING   pid 2183, uptime 0:02:01
+ecommerce                        RUNNING   pid 2176, uptime 0:02:01
+ecomworker                       RUNNING   pid 2153, uptime 0:02:01
+edxapp_worker:cms_default_1      RUNNING   pid 2177, uptime 0:02:01
+edxapp_worker:cms_high_1         RUNNING   pid 2178, uptime 0:02:01
+edxapp_worker:lms_default_1      RUNNING   pid 2182, uptime 0:02:01
+edxapp_worker:lms_high_1         RUNNING   pid 2181, uptime 0:02:01
+edxapp_worker:lms_high_mem_1     RUNNING   pid 2180, uptime 0:02:01
+forum                            RUNNING   pid 2154, uptime 0:02:01
+insights                         RUNNING   pid 2174, uptime 0:02:01
+lms                              RUNNING   pid 2157, uptime 0:02:01
+notifier-celery-workers          RUNNING   pid 2156, uptime 0:02:01
+notifier-scheduler               RUNNING   pid 2171, uptime 0:02:01
+xqueue                           RUNNING   pid 2152, uptime 0:02:01
+xqueue_consumer                  RUNNING   pid 2160, uptime 0:02:01
+```
+
 ## Bad Suggestions (Arbitrary Upgrades)
 Some Open edX components are outdated. If you see a message suggesting that you update something manually, don't do it -- something is probably relying on the outdated software remaining at that older version. 
 **Don't do** bellow commands
