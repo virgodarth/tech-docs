@@ -50,7 +50,7 @@ params:
 - subj (-subj arg): Sets subject name for new request or supersedes the subject name when processing a request. The arg must be formatted as */type0=value0/type1=value1/type2=...*, characters may be escaped by \ (backslash), no spaces are skipped.
 
 ### Sign CSR
-#### Sing CA SSL
+#### Sign CA SSL
 1. **Require**: Send your certificate to provider. Ex: virgodarth_com.csr
 
 2. **Validate**: Provider server will ask you verify your domain name. We have 3 ways to verify it (whois)
@@ -69,7 +69,7 @@ This step we will self-sign for own certificate (\*.crt)
 openssl x509 -req -days 365 -in virgodart_com.csr -signkey virgodarth_com.key -out virgodarth_com.crt
 ```
 
-### Prepairn to install SSL on Own Server
+### Prepaire to install SSL on Own Server
 1. Nginx Server: Combine crt and ca-bundle file
 ```
 cat virgodarth_com.crt virgodarth_com.ca-bundle > virgodarth_com_ca.crt
