@@ -34,10 +34,10 @@ Example:
 - [NameCheap.com](https://www.namecheap.com/)
 
 ## How To Create An SSL
-0. [Optional] Online generate
+### [Optional] Online generate
 - Use [Digicert Tool](https://www.digicert.com/easy-csr/openssl.htm) to generate openssl script
 
-## Create CSR and Private key
+### Create CSR and Private key
 Create cert and private key. Use openssl command to create keys. After execute command we get 2 files: virgodarth_com.csr (send provider server), virgodarth_com.crt (private key, don't share anyone).
 ```
 openssl req -new -newkey rsa:2048 -nodes -out virgodarth_com.csr -keyout virgodarth_com.key -subj "/C=VN/ST=Ho Chi Minh/L=District 10/O=Virgo Group/CN=virgodarth.com"
@@ -49,7 +49,7 @@ params:
 - keyout (-keyout filename): This gives the filename to write the newly created private key to.
 - subj (-subj arg): Sets subject name for new request or supersedes the subject name when processing a request. The arg must be formatted as */type0=value0/type1=value1/type2=...*, characters may be escaped by \ (backslash), no spaces are skipped.
 
-## Sign CSR
+### Sign CSR
 1. **Require**: Send your certificate to provider. Ex: virgodarth_com.csr
 
 2. **Validate**: Provider server will ask you verify your domain name. We have 3 ways to verify it (whois)
@@ -59,22 +59,22 @@ params:
 
 3. **Confirm**: provider will send you 2 files: virgodarth_com.crt, virgodarth_com.ca-bundle
 
-## Let's Trust SSL
+### Let's Trust SSL
 
-## Self-sign SSL
+### Self-sign SSL
 If you don't have plan on your certificate signed by a CA, we will generate a self-signed certificates.
 This step we will self-sign for own certificate (\*.crt)
 ```
 openssl x509 -req -days 365 -in virgodart_com.csr -signkey virgodarth_com.key -out virgodarth_com.crt
 ```
 
-## Prepairn to install SSL on Own Server
-### Nginx Server: Combine crt and ca-bundle file
+### Prepairn to install SSL on Own Server
+1. Nginx Server: Combine crt and ca-bundle file
 ```
 cat virgodarth_com.crt virgodarth_com.ca-bundle > virgodarth_com_ca.crt
 ```
 
-### IIS: create pfx file
+2. IIS: create pfx file
 Create pfx file to upload IIS
 ```
 openssl pkcs12 -export -out virgodarth_com.pfx -inkey virgodarth_com.key -in virgodarth_com_ca.crt
@@ -82,5 +82,5 @@ Enter Export Password:  # enter your password
 Verifying - Enter Export Password:  # retype
 ```
 
-### Apache Server:
+3. Apache Server:
 Do nothing
