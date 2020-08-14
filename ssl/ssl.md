@@ -50,6 +50,7 @@ params:
 - subj (-subj arg): Sets subject name for new request or supersedes the subject name when processing a request. The arg must be formatted as */type0=value0/type1=value1/type2=...*, characters may be escaped by \ (backslash), no spaces are skipped.
 
 ### Sign CSR
+#### Sing CA SSL
 1. **Require**: Send your certificate to provider. Ex: virgodarth_com.csr
 
 2. **Validate**: Provider server will ask you verify your domain name. We have 3 ways to verify it (whois)
@@ -59,9 +60,9 @@ params:
 
 3. **Confirm**: provider will send you 2 files: virgodarth_com.crt, virgodarth_com.ca-bundle
 
-### Let's Trust SSL
+#### Let's Trust SSL
 
-### Self-sign SSL
+#### Self-sign SSL
 If you don't have plan on your certificate signed by a CA, we will generate a self-signed certificates.
 This step we will self-sign for own certificate (\*.crt)
 ```
