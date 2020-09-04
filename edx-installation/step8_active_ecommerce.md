@@ -23,7 +23,7 @@
 9. Name: Ecommerce SSO (feeling free)
 
 ## Configure ecommerce.yml
-- Change LMS server
+1. Change LMS server
 ```
 $ sudo vi /edx/etc/ecommerce.yml
 # change example domain
@@ -36,7 +36,7 @@ $ sudo vi /edx/etc/ecommerce.yml
 :%s/http:\/\/127.0.0.1:8002/https:\/\/<ecommerce-domain>/
 ```
 
-- SSL Secure
+2. SSL Secure
 ```
 SESSION_COOKIE_SECURE: true
 SESSION_EXPIRE_AT_BROWSER_CLOSE: true
@@ -45,7 +45,7 @@ CORS_ALLOW_CREDENTIALS: false
 CORS_ORIGIN_WHITELIST: ['somedomain.ok']
 ```
 
-- Authorization between servers
+3 Authorization between servers
 ```
 EDX_API_KEY: <your key>
 
@@ -59,7 +59,43 @@ BACKEND_SERVICE_EDX_OAUTH2_KEY: <backend-client-id>
 BACKEND_SERVICE_EDX_OAUTH2_SECRET: <backend-client-secret>
 ```
 
-- Restart Service
+4. Configure JWT
+- The same value's in lms and ecommerce
+```
+JWT_PRIVATE_SIGNING_JWK: <jwt-generate-or-none>
+JWT_PUBLIC_SIGNING_JWK_SET: <jwt-gernerate-or-none>
+```
+- Generate JWT script
+```
+import getpass
+
+from Cryptodome.PublicKey import RSA
+from jwkest import jwk
+
+
+KEY_SIZE = 2048  # recommended
+
+key_phase = getpass.getpass(prompt='Enter your key phase: ')
+print()
+
+rsa_alg = RSA.generate(KEY_SIZE)
+
+# generate private key
+rsa_jwk = jwk.RSAKey(kid=key_phase, key=rsa_alg)
+
+# generate public key
+public_keys = jwk.KEYS()
+public_keys.append(rsa_jwk)
+
+# convert to string
+serialized_private_keys = rsa_jwk.__str__()
+serialized_public_keys = public_keys.dump_jwks()
+
+print("=====Start JWT_PRIVATE_SIGNING_JWK=====\n", serialized_private_keys, "\n=====End JWT_PRIVATE_SIGNING_JWK=====\n")
+print("=====Start JWT_PUBLIC_SIGNING_JWK_SET=====\n", serialized_public_keys, "\n=====End JWT_PUBLIC_SIGNING_JWK_SET=====")
+```
+
+5. Restart Service
 ```
 $ sudo /edx/bin/super
 ```
@@ -91,10 +127,10 @@ $ python manage.py create_or_update_site \
     --partner-name=VirgoDarth \
     --lms-url-root=https://<lms-server> \
     --payment-processors=cybersource,paypal \  # allow 3 methods: paypal, cybersource, stripe
-    --sso-client-id=orR3s5dyMwypEMLx2h1wwWh8Mr6c586fwJihpZ76 \
-    --sso-client-secret=8sahDxBuV52eQw8LfI3eKZfUwJrNvRaO7nGTXLsxrKerM3zaDZVGnxwGbXOOAczTBdspfizLLXAwHYCSE9nMfOkPCI7iFGR829MHWf2FgLk5DQO1enMzlHdpzfNYsKqA \
-    --backend-service-client-id=uTMwcAOn2ewlz7o2y3mWlhphjFyPCrRqfjaw43gn \
-    --backend-service-client-secret=91FFfBfmPNjixfIBStopeOwVkhWjgOfmdBURRjuBALSJtMwgpaQ9q1dAn4t1Q0d1nDRDUFdeJpm0Pa0Aa31uanlRLtFw5RnjZnl2NfLRyY0IV3MKLFxmp2x5oiS5ThM7 \
+    --sso-client-id=<sso-client-id> \
+    --sso-client-secret=<sso-client-secret> \
+    --backend-service-client-id=<backend-service-client-id> \
+    --backend-service-client-secret=<backend-service-client-secret> \
     --lms-public-url-root=https://<lms-server> \
     --base-cookie-domain=<base-domain> \
     --discovery_api_url=https://<discovery-server> \
@@ -102,10 +138,19 @@ $ python manage.py create_or_update_site \
 ```
 
 ## Configure EcommerWorker
+### Update Configure File
 ```
 $ sudo vi /edx/etc/ecommerworker.yml
 :%s/http:\/\/127.0.0.1:8002/https:\/\/<ecommerce-server>/
 ```
+
+### Grant Permissions for EcommerWorkr on LMS
+1. Go to https://<lms-server>/admin/auth/user/{ecommerce-id}/change
+2. On **Permissions** section, add 4 roles
+- course_modes | course mode | Can add course mode
+- course_modes | course mode | Can change course mode
+- course_modes | course mode | Can delete course mode
+- course_modes | course mode | Can view course mode
 
 ## Restart services
 ```
@@ -162,7 +207,7 @@ You can't access your ecommerce server
 # Related files
 - /edx/app/ecommerce/ecommerce/ecommerce/core/management/commands/create_or_update_site.py
 
-# Related table on ecommerce database
+# Related tables on ecommerce database
 - django_site
 - partner_partner
 - core_siteconfiguration
