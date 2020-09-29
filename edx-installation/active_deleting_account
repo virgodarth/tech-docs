@@ -1,0 +1,4 @@
+1. sudo su edxapp -s /bin/bash
+2. cd edx-platform
+3. source ../edxapp_env
+4. python manage.py lms populate_retirement_states
