@@ -20,7 +20,7 @@ Register an account on [Transifex](www.transifex.com/sigup/).
 ### Pull releasing languages
 1. Switch to edxapp user
 ```
-$ sudo su -u edxapp -s /bin/bash
+$ sudo su edxapp -s /bin/bash
 $ cd ~
 $ source edxapp_env
 ```
@@ -40,9 +40,9 @@ username = api
 4. Pull latest translation
 ```
 # pull all
-$ tx --all --parallel  # pull translation without reviewed
+$ tx pull --all --parallel  # pull translation without reviewed
 # or pull one language
-$ tx --parallel --languages <your-lang>
+$ tx pull --parallel -l <your-langs-are-separated-by-comma>
 ```
 
 5. Generate i18n
@@ -52,7 +52,7 @@ $ paver i18n_generate
 
 6. [Optional] Update assets
 ```
-$ paver update_assets --settings=<aws/production> --themes=<your-themes>
+$ paver update_assets lms cms --settings=<aws/production> --themes=<your-themes>
 ```
 
 ## Issues
@@ -112,6 +112,50 @@ ValueError: plural forms expression could be dangerous
 - Resolve: Change *Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n* to *Plural-Forms: nplurals=2; plural=(n != 1);\n*
 ```
 $ grep -rn INTEGER conf/locale/
+```
+
+2. Locale is incomplete
+```
+Traceback (most recent call last):
+  File "/edx/app/edxapp/venvs/edxapp/bin/i18n_tool", line 11, in <module>
+    sys.exit(main())
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/main.py", line 60, in main
+    return module.main()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/__init__.py", line 51, in __call__
+    return self.run(args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/generate.py", line 189, in run
+    execute(compile_cmd, working_directory=configuration.root_dir, stderr=stderr)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/execute.py", line 21, in execute
+    sp.check_call(command, cwd=working_directory, stderr=stderr, shell=True)
+  File "/usr/lib/python2.7/subprocess.py", line 541, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command 'django-admin.py compilemessages -v0' returned non-zero exit status 1
+```
+- Resolve: run below command and rm locale language directories which raised exception. It'll like */edx/app/edxapp/edx-platform/conf/locale/<locale-lang>*
+```
+$ django-admin.py compilemessages -v0
+```
+
+3. Missing locale
+```
+INFO:i18n.execute:django-admin.py compilemessages -v0
+INFO:i18n.generate:Copying mapped locale /edx/app/edxapp/edx-platform/conf/locale/zh_CN/LC_MESSAGES to /edx/app/edxapp/edx-platform/conf/locale/zh_HANS/LC_MESSAGES
+Traceback (most recent call last):
+  File "/edx/app/edxapp/venvs/edxapp/bin/i18n_tool", line 11, in <module>
+    sys.exit(main())
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/main.py", line 60, in main
+    return module.main()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/__init__.py", line 51, in __call__
+    return self.run(args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/i18n/generate.py", line 198, in run
+    path.copytree(path(source_dirname), path(dest_dirname))
+  File "/usr/lib/python2.7/shutil.py", line 171, in copytree
+    names = os.listdir(src)
+OSError: [Errno 2] No such file or directory: '/edx/app/edxapp/edx-platform/conf/locale/<your-lang>/LC_MESSAGES'
+```
+- Resolve: remove your locale or pull a new locale from tranfix.
+```
+$ tx pull --parallel -l <your-lang>
 ```
 
 ## Reference
